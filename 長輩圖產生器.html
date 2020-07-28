@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>長輩圖生產器</title>
+    <link rel="stylesheet" href="css.css">
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <p><input type="text" id="Message" placeholder="輸入上列文字" /></p>
+    <p><input type="text" id="Message2" placeholder="輸入下列文字" /></p>
+
+    <!-- 輸入文字顯示圖片 -->
+    <p><img id="imgView" width="0" height="0" style="border:0px solid #000000;">
+        <p>
+
+            <!-- 上傳圖片 -->
+            <div class="upload">
+                <div class="form-input">
+                    <label for="file-ip-1">上傳圖片</label>
+                    <input type="file" id="file-ip-1" accept="image/*" onchange="showPreview(event);">
+                    <div class="preview">
+                        <img id="pic" accept="image/* " onchange="showPreview(event);">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 下載成品 -->
+            <div class="upload2">
+                <div class="form-input2">
+                    <a id="aDownload" href="#" download="pic.png" style="margin-left: 50%;">
+                        <button input type="submit" class="btn" value=""> 下載成品</button>
+                    </a>
+                </div>
+            </div>
+
+            <script>
+                function showPreview(event) {
+                    if (event.target.files.length > 0) {
+                        var src = URL.createObjectURL(event.target.files[0]);
+                        var preview = document.getElementById("pic");
+                        preview.src = src;
+                        preview.style.display = "block";
+                    }
+                }
+
+                let canvas, ctx, oldTxt, f;
+                window.addEventListener('load', (ev) => {
+                    canvas = document.getElementById('canvas');
+                    ctx = canvas.getContext('2d');
+                    canvas.width = 500;
+                    canvas.height = 500;
+
+                    drawText();
+                    document.getElementById('Message').addEventListener('input', drawText);
+                    document.getElementById('Message2').addEventListener('input', drawText);
+                });
+
+                const drawText = function() {
+                    let fontFamily = '微軟正黑體';
+                    ctx.drawImage(pic, 0, 0, canvas.width, canvas.height);
+                    ctx.font = `normal 40px xyz, ${fontFamily}, monospace`;
+                    ctx.fillStyle = 'white';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'alphabetic';
+                    ctx.direction = 'ltr';
+
+                    //上排文字
+                    let txt = document.getElementById('Message').value;
+                    let metrics = ctx.measureText(oldTxt);
+                    let w = metrics.width;
+                    if (txt == '') {
+                        txt = '顯示上排文字';
+                    }
+                    ctx.fillText(txt, 350, 50);
+                    oldTxt = txt;
+
+                    //下排文字
+                    let txt2 = document.getElementById('Message2').value;
+                    let metrics2 = ctx.measureText(oldTxt);
+                    let w2 = metrics2.width;
+                    if (txt2 == '') {
+                        txt2 = '顯示下排文字';
+                    }
+                    ctx.fillText(txt2, 150, 480);
+                    oldTxt = txt2;
+
+                    imgView.src = canvas.toDataURL("image/png");
+
+                    aDownload.href = canvas.toDataURL("image/png");
+                }
+            </script>
+</body>
+
+</html>
